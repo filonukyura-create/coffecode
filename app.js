@@ -7,22 +7,33 @@ const CONFIG = {
   bonus: 100
 };
 
+function makeArt(bg1, bg2, emoji, label) {
+  const svg = `<svg xmlns="http://w3.org" width="400" height="300" viewBox="0 0 400 300">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs>
+    <rect width="400" height="300" rx="24" fill="url(#g)"/>
+    <circle cx="330" cy="60" r="70" fill="rgba(255,255,255,0.12)"/>
+    <text x="200" y="145" font-size="86" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+    <text x="200" y="240" font-family="sans-serif" font-size="22" font-weight="bold" fill="rgba(255,255,255,0.92)" text-anchor="middle">${label}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+
 const CATS = [
-  { id: "coffee", t: "☕ Кофе", s: "Классика и авторский", i: "https://loremflickr.com" },
-  { id: "combo", t: "🥐 Комбо", s: "Выгодные наборы", i: "https://loremflickr.com" },
-  { id: "iced", t: "🧊 Напитки", s: "Айс-кофе и лимонады", i: "https://loremflickr.com" },
-  { id: "food", t: "🥪 Еда", s: "Сэндвичи и десерты", i: "https://loremflickr.com" }
+  { id: "coffee", t: "☕ Кофе", s: "Классика и авторский", i: makeArt("#6f4e37", "#3e2723", "☕", "100% АРАБИКА") },
+  { id: "combo", t: "🥐 Комбо", s: "Выгодные наборы", i: makeArt("#d97706", "#92400e", "🥐", "ВЫГОДНЫЙ СЕТ") },
+  { id: "iced", t: "🧊 Напитки", s: "Айс-кофе и лимонады", i: makeArt("#0284c7", "#1e3a8a", "🧊", "ОСВЕЖАЕТ") },
+  { id: "food", t: "🥪 Еда", s: "Сэндвичи и десерты", i: makeArt("#059669", "#064e3b", "🥪", "СВЕЖЕЕ") }
 ];
 
 const PRODS = [
-  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная молочная пенка", p: 6.00, i: "https://loremflickr.com" },
-  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с бархатной микропеной", p: 6.50, i: "https://loremflickr.com" },
-  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и классический капучино", p: 9.50, i: "https://loremflickr.com" },
-  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной и чёрный кофе", p: 11.00, i: "https://loremflickr.com" },
-  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе со льдом и карамелью", p: 7.00, i: "https://loremflickr.com" },
-  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Бодрящий эспрессо со швепсом и лаймом", p: 7.50, i: "https://loremflickr.com" },
-  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, филе индейки, творожный сыр", p: 8.50, i: "https://loremflickr.com" },
-  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Нежный сливочный десерт на песочной основе", p: 7.50, i: "https://loremflickr.com" }
+  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная молочная пенка", p: 6.00, i: makeArt("#78350f", "#451a03", "☕", "350 МЛ") },
+  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с бархатной микропеной", p: 6.50, i: makeArt("#5c4033", "#2b1b17", "🥛", "250 МЛ") },
+  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и классический капучино", p: 9.50, i: makeArt("#ea580c", "#7c2d12", "🥐", "ХИТ УТРА") },
+  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной и чёрный кофе", p: 11.00, i: makeArt("#d97706", "#78350f", "🥞", "ЗАВТРАК") },
+  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе со льдом и карамелью", p: 7.00, i: makeArt("#0ea5e9", "#0369a1", "🧋", "СО ЛЬДОМ") },
+  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Бодрящий эспрессо со швепсом и лаймом", p: 7.50, i: makeArt("#10b981", "#047857", "🍋", "ТОНИК") },
+  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, филе индейки, творожный сыр", p: 8.50, i: makeArt("#16a34a", "#14532d", "🥪", "СЫТНО") },
+  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Нежный сливочный десерт на песочной основе", p: 7.50, i: makeArt("#db2777", "#831843", "🍰", "ДЕСЕРТ") }
 ];
 
 let cart = {};
@@ -79,7 +90,6 @@ function render() {
   });
   box.appendChild(grid);
 }
-
 function buildGrid(list) {
   if (!list.length) return el("p", "", "Ничего не найдено 😔");
   const grid = el("div", "grid");
@@ -139,8 +149,6 @@ function sendOrder() {
   if (tot <= 0) return;
   if (window.Telegram && window.Telegram.WebApp) {
     window.Telegram.WebApp.sendData(JSON.stringify({ items: it.join(", "), total: Number(tot.toFixed(2)) }));
-  } else {
-    alert("Заказ сформирован: " + it.join(", ") + " на сумму " + tot.toFixed(2) + " BYN");
   }
 }
 
