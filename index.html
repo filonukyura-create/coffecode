@@ -1,205 +1,126 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Кофейня — Меню</title>
-  <script src="https://telegram.org"></script>
-  <style>
-    :root {
-      --bg: var(--tg-theme-bg-color, #ffffff);
-      --sec-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
-      --text: var(--tg-theme-text-color, #18181b);
-      --hint: var(--tg-theme-hint-color, #71717a);
-      --btn: var(--tg-theme-button-color, #2481cc);
-      --btn-text: var(--tg-theme-button-text-color, #ffffff);
-      --border: rgba(128, 128, 128, 0.15);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); padding: 10px 14px 120px; max-width: 540px; margin: 0 auto; }
-
-    /* Верхняя плашка с балансом бонусов */
-    .bonus-header {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--sec-bg); border: 1px solid var(--border);
-      border-radius: 14px; padding: 10px 14px; margin-bottom: 10px; cursor: pointer;
-    }
-    .bonus-shop { font-size: 14px; font-weight: 700; }
-    .bonus-badge {
-      background: var(--btn); color: var(--btn-text);
-      padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700;
-    }
-
-    /* Панель: Гео + Поиск */
-    .top-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; position: sticky; top: 0; background: var(--bg); padding: 4px 0 8px; z-index: 10; }
-    .geo-btn {
-      display: flex; align-items: center; gap: 4px; background: var(--sec-bg); color: var(--text);
-      border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
-      font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    }
-    .search-box { position: relative; flex-grow: 1; }
-    .search-box input {
-      width: 100%; background: var(--sec-bg); color: var(--text); border: 1px solid var(--border);
-      border-radius: 12px; padding: 10px 12px 10px 34px; font-size: 14px; outline: none;
-    }
-    .search-box input::placeholder { color: var(--hint); }
-    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--hint); pointer-events: none; }
-
-    /* Сетка 2x2 категорий */
-    .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .cat-card {
-      background: var(--sec-bg); border: 1px solid var(--border); border-radius: 18px;
-      padding: 14px; display: flex; flex-direction: column; justify-content: space-between;
-      aspect-ratio: 1 / 1.05; cursor: pointer; transition: transform 0.15s; overflow: hidden;
-    }
-    .cat-card:active { transform: scale(0.97); }
-    .cat-title { font-size: 16px; font-weight: 700; }
-    .cat-sub { font-size: 12px; color: var(--hint); margin-top: 2px; }
-    .cat-img {
-      width: 85%; height: 65%; object-fit: cover; border-radius: 12px;
-      align-self: flex-end; margin-top: auto;
-    }
-
-    /* Внутри категории */
-    .sub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .back-btn {
-      background: var(--sec-bg); color: var(--text); border: 1px solid var(--border);
-      border-radius: 10px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
-    }
-    .sub-title { font-size: 18px; font-weight: 700; }
-
-    /* Товары */
-    .prod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .prod-card {
-      background: var(--sec-bg); border: 1px solid var(--border); border-radius: 16px;
-      overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
-    }
-    .prod-card img { width: 100%; height: 115px; object-fit: cover; background: rgba(128,128,128,0.1); }
-    .prod-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-    .prod-name { font-size: 14px; font-weight: 600; line-height: 1.25; }
-    .prod-desc { font-size: 11px; color: var(--hint); margin: 4px 0 8px; }
-    .prod-price { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-
-    .add-btn {
-      width: 100%; background: var(--btn); color: var(--btn-text); border: none;
-      padding: 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
-    }
-    .counter {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--bg); border-radius: 10px; padding: 3px; border: 1px solid var(--border);
-    }
-    .counter button {
-      width: 28px; height: 28px; border: none; border-radius: 8px;
-      background: var(--btn); color: var(--btn-text); font-size: 16px; font-weight: 700; cursor: pointer;
-    }
-    .counter span { font-size: 13px; font-weight: 600; }
-
-    /* Нижняя панель */
-    .bottom-dock {
-      position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg);
-      border-top: 1px solid var(--border); padding: 10px 14px 14px;
-      display: flex; flex-direction: column; gap: 8px; max-width: 540px; margin: 0 auto; z-index: 20;
-    }
-    .dock-btn {
-      width: 100%; padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 600;
-      cursor: pointer; border: 1px solid var(--border); text-align: center;
-    }
-    .dock-write { background: var(--sec-bg); color: var(--text); }
-    .dock-bonus { background: var(--btn); color: var(--btn-text); border: none; }
-
-    /* Модальное окно */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      z-index: 50; align-items: flex-end; justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-sheet {
-      background: var(--bg); color: var(--text); width: 100%; max-width: 540px;
-      border-radius: 20px 20px 0 0; padding: 20px 16px 28px;
-    }
-    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-    .modal-text { font-size: 14px; color: var(--hint); line-height: 1.45; margin-bottom: 14px; white-space: pre-line; }
-    
-    /* Мини-карта внутри Гео */
-    .map-frame {
-      width: 100%; height: 185px; border: 1px solid var(--border);
-      border-radius: 14px; margin-bottom: 12px; overflow: hidden;
-    }
-    .route-btn {
-      display: block; width: 100%; background: var(--btn); color: var(--btn-text);
-      text-align: center; text-decoration: none; padding: 11px; border-radius: 12px;
-      font-size: 14px; font-weight: 600; margin-bottom: 8px;
-    }
-    .modal-close {
-      width: 100%; background: var(--sec-bg); color: var(--text); border: none;
-      padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Кофейня Зерно</title>
+<script src="https://telegram.org"></script>
+<style>
+:root{--bg:var(--tg-theme-bg-color,#fff);--sec:var(--tg-theme-secondary-bg-color,#f4f4f5);--txt:var(--tg-theme-text-color,#18181b);--hint:var(--tg-theme-hint-color,#71717a);--btn:var(--tg-theme-button-color,#2481cc);--btxt:var(--tg-theme-button-text-color,#fff);--brd:rgba(128,128,128,.18)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--txt);padding:10px 14px 120px;max-width:540px;margin:0 auto}
+.bh{display:flex;align-items:center;justify-content:space-between;background:var(--sec);border:1px solid var(--brd);border-radius:14px;padding:10px 14px;margin-bottom:10px;cursor:pointer}
+.bb{background:var(--btn);color:var(--btxt);padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700}
+.top{display:flex;gap:8px;margin-bottom:14px;position:sticky;top:0;background:var(--bg);padding:4px 0 8px;z-index:10}
+.geo{background:var(--sec);color:var(--txt);border:1px solid var(--brd);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.srch{position:relative;flex:1}
+.srch input{width:100%;background:var(--sec);color:var(--txt);border:1px solid var(--brd);border-radius:12px;padding:10px 12px 10px 32px;font-size:14px;outline:none}
+.srch span{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--hint)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cc{background:var(--sec);border:1px solid var(--brd);border-radius:18px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;aspect-ratio:1/1.05;cursor:pointer}
+.cc img{width:85%;height:65%;object-fit:cover;border-radius:12px;align-self:flex-end;margin-top:auto}
+.pc{background:var(--sec);border:1px solid var(--brd);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
+.pc img{width:100%;height:110px;object-fit:cover}
+.pb{padding:10px;display:flex;flex-direction:column;flex:1;justify-content:space-between}
+.ab{width:100%;background:var(--btn);color:var(--btxt);border:none;padding:8px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.cnt{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:10px;padding:3px;border:1px solid var(--brd)}
+.cnt button{width:28px;height:28px;border:none;border-radius:8px;background:var(--btn);color:var(--btxt);font-size:16px;font-weight:700;cursor:pointer}
+.dock{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--brd);padding:10px 14px 14px;display:flex;flex-direction:column;gap:8px;max-width:540px;margin:0 auto;z-index:20}
+.db{width:100%;padding:11px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;border:1px solid var(--brd)}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:flex-end;justify-content:center}
+.ov.open{display:flex}
+.sh{background:var(--bg);color:var(--txt);width:100%;max-width:540px;border-radius:20px 20px 0 0;padding:18px 16px 26px}
+.mf{width:100%;height:180px;border:1px solid var(--brd);border-radius:14px;margin:10px 0;overflow:hidden}
+.rb{display:block;width:100%;background:var(--btn);color:var(--btxt);text-align:center;text-decoration:none;padding:11px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:8px}
+</style>
 </head>
 <body>
-
-  <!-- ВЕРХНЯЯ ПЛАШКА: НАЗВАНИЕ + БАЛАНС БОНУСОВ -->
-  <div class="bonus-header" onclick="openModal('bonus')">
-    <div class="bonus-shop" id="shopTitle">Кофейня «Зерно»</div>
-    <div class="bonus-badge" id="bonusBadge">🎁 100 баллов</div>
+<div class="bh" onclick="openM('bonus')">
+  <b style="font-size:14px">Кофейня «Зерно»</b>
+  <span class="bb" id="bb">🎁 100 баллов</span>
+</div>
+<div class="top">
+  <button class="geo" onclick="openM('geo')">📍 Гео</button>
+  <div class="srch"><span>🔍</span><input type="text" placeholder="Поиск напитков и еды..." oninput="q=this.value;render()"></div>
+</div>
+<div id="app"></div>
+<div class="dock" id="dock">
+  <button class="db" style="background:var(--sec);color:var(--txt)" onclick="openM('write')">💬 Написать бариста</button>
+  <button class="db" style="background:var(--btn);color:var(--btxt);border:none" onclick="openM('bonus')">🎁 Мои бонусы</button>
+</div>
+<div class="ov" id="ov" onclick="if(event.target===this)closeM()">
+  <div class="sh">
+    <h3 id="mt" style="font-size:18px;margin-bottom:6px"></h3>
+    <div id="mm"></div>
+    <p id="mx" style="font-size:14px;color:var(--hint);line-height:1.45;margin-bottom:14px;white-space:pre-line"></p>
+    <div id="ma"></div>
+    <button class="db" style="background:var(--sec);color:var(--txt);border:none" onclick="closeM()">Закрыть</button>
   </div>
-
-  <!-- ГЕО + ПОИСК -->
-  <div class="top-bar">
-    <button class="geo-btn" onclick="openModal('geo')">📍 Гео</button>
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="Поиск напитков и еды..." oninput="handleSearch(this.value)">
-    </div>
-  </div>
-
-  <!-- ОСНОВНОЙ КОНТЕНТ -->
-  <div id="mainContent"></div>
-
-  <!-- НИЖНЯЯ ПАНЕЛЬ -->
-  <div class="bottom-dock" id="bottomDock">
-    <button class="dock-btn dock-write" onclick="openModal('write')">💬 Написать бариста</button>
-    <button class="dock-btn dock-bonus" onclick="openModal('bonus')">🎁 Мои бонусы</button>
-  </div>
-
-  <!-- МОДАЛЬНОЕ ОКНО -->
-  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal-sheet" onclick="event.stopPropagation()">
-      <div class="modal-title" id="modalTitle"></div>
-      <div id="modalMapContainer"></div>
-      <div class="modal-text" id="modalText"></div>
-      <div id="modalActionContainer"></div>
-      <button class="modal-close" onclick="forceCloseModal()">Закрыть</button>
-    </div>
-  </div>
-
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const userBalance = urlParams.get('balance') || '100';
-
-    // ==========================================
-    // НАСТРОЙКИ ШАБЛОНА ПОД КЛИЕНТА
-    // ==========================================
-    const CONFIG = {
-      shopName: 'Кофейня «Зерно»',
-      address: '📍 г. Минск, ул. Ломоносова, 6\n🕒 Время работы: ежедневно с 07:00 до 19:00',
-      // Координаты Минск, ул. Ломоносова, 6
-      lat: 53.9261,
-      lon: 27.5936,
-      baristaUsername: 'zerno_barista',
-      bonusInfo: '• Ваш баланс: ' + userBalance + ' баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу после оформления корзины!'
-    };
-
-    document.getElementById('shopTitle').innerText = CONFIG.shopName;
-    document.getElementById('bonusBadge').innerText = '🎁 ' + userBalance + ' баллов';
-
-    const CATEGORIES = [
-      { id: 'coffee', title: 'Кофе', sub: 'Классика и авторский', img: 'https://unsplash.com' },
-      { id: 'combo', title: 'Комбо', sub: 'Выгодные наборы', img: 'https://unsplash.com' },
-      { id: 'iced', title: 'Напитки', sub: 'Айс-кофе и лимонады', img: 'https://unsplash.com' },
-      { id: 'food', title: 'Еда', sub: 'Сэндвичи и десерты', img: 'https://unsplash.com' }
-    ];
-
-    const PRODUCTS = [
-      { id: 1, cat: 'coffee', name: 'Капучино (350 мл)', desc: '100% арабика и плотная пенка', price: 6.00, img: 'https://unsplash.com' },
+</div>
+<script>
+const CATS=[
+  {id:'coffee',t:'Кофе',s:'Классика и авторский',i:'https://unsplash.com'},
+  {id:'combo',t:'Комбо',s:'Выгодные наборы',i:'https://unsplash.com'},
+  {id:'iced',t:'Напитки',s:'Айс-кофе и лимонады',i:'https://unsplash.com'},
+  {id:'food',t:'Еда',s:'Сэндвичи и десерты',i:'https://unsplash.com'}
+];
+const PRODS=[
+  {id:1,c:'coffee',n:'Капучино (350 мл)',d:'100% арабика и плотная пенка',p:6,i:'https://unsplash.com'},
+  {id:2,c:'coffee',n:'Флэт Уайт (250 мл)',d:'Двойной эспрессо с микропеной',p:6.5,i:'https://unsplash.com'},
+  {id:3,c:'combo',n:'Круассан + Капучино',d:'Идеальный утренний сет',p:9.5,i:'https://unsplash.com'},
+  {id:4,c:'combo',n:'Сырники + Американо',d:'Домашние сырники со сметаной',p:11,i:'https://unsplash.com'},
+  {id:5,c:'iced',n:'Айс Латте Карамель',d:'Охлаждённый кофе со льдом',p:7,i:'https://unsplash.com'},
+  {id:6,c:'iced',n:'Эспрессо-тоник',d:'Освежающий микс с тоником',p:7.5,i:'https://unsplash.com'},
+  {id:7,c:'food',n:'Бейгл с индейкой',d:'Свежий бейгл, сыр, зелень',p:8.5,i:'https://unsplash.com'},
+  {id:8,c:'food',n:'Чизкейк Нью-Йорк',d:'Классический сливочный десерт',p:7.5,i:'https://unsplash.com'}
+];
+let cart={},cat=null,q='';
+function render(){
+  const a=document.getElementById('app');
+  if(q.trim()){
+    const f=PRODS.filter(x=>x.n.toLowerCase().includes(q.toLowerCase()));
+    a.innerHTML='<div style="margin-bottom:12px;font-weight:700">Найдено ('+f.length+')</div>'+pGrid(f);return;
+  }
+  if(cat){
+    const c=CATS.find(x=>x.id===cat);
+    a.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button class="geo" onclick="cat=null;render()">← Назад</button><b>'+c.t+'</b></div>'+pGrid(PRODS.filter(x=>x.c===cat));return;
+  }
+  a.innerHTML='<div class="grid">'+CATS.map(c=>'<div class="cc" onclick="cat=\''+c.id+'\';render()"><div><b>'+c.t+'</b><div style="font-size:12px;color:var(--hint)">'+c.s+'</div></div><img src="'+c.i+'"></div>').join('')+'</div>';
+}
+function pGrid(list){
+  if(!list.length)return'<p style="color:var(--hint)">Ничего не найдено 😔</p>';
+  return'<div class="grid">'+list.map(p=>{
+    const n=cart[p.id]||0;
+    const b=n===0?'<button class="ab" onclick="chg('+p.id+',1)">+ В корзину</button>':'<div class="cnt"><button onclick="chg('+p.id+',-1)">−</button><span>'+n+' шт</span><button onclick="chg('+p.id+',1)">+</button></div>';
+    return'<div class="pc"><img src="'+p.i+'"><div class="pb"><div><b style="font-size:14px">'+p.n+'</b><div style="font-size:11px;color:var(--hint);margin:4px 0 8px">'+p.d+'</div></div><div><div style="font-weight:700;margin-bottom:8px">'+p.p.toFixed(2)+' BYN</div>'+b+'</div></div></div>';
+  }).join('')+'</div>';
+}
+function chg(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];render();upBtn();}
+function openM(t){
+  const mt=document.getElementById('mt'),mx=document.getElementById('mx'),mm=document.getElementById('mm'),ma=document.getElementById('ma');
+  mm.innerHTML='';ma.innerHTML='';
+  if(t==='geo'){
+    mt.innerText='Кофейня «Зерно»';
+    mm.innerHTML='<div class="mf"><iframe width="100%" height="100%" frameborder="0" src="https://openstreetmap.org"></iframe></div>';
+    mx.innerText='📍 г. Минск, ул. Ломоносова, 6\n🕒 Время работы: ежедневно с 07:00 до 19:00';
+    ma.innerHTML='<a class="rb" href="https://yandex.by" target="_blank">🗺 Открыть в Яндекс.Картах</a>';
+  }else if(t==='bonus'){
+    mt.innerText='🎁 Программа лояльности';
+    mx.innerText='• Ваш баланс: 100 баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу при оформлении заказа!';
+  }else{
+    mt.innerText='💬 Связь с бариста';
+    mx.innerText='Есть вопрос по заказу или меню? Напишите нам напрямую в Telegram: @zerno_barista';
+  }
+  document.getElementById('ov').classList.add('open');
+}
+function closeM(){document.getElementById('ov').classList.remove('open');}
+function upBtn(){
+  if(!window.Telegram||!window.Telegram.WebApp)return;
+  const tg=window.Telegram.WebApp,dk=document.getElementById('dock');
+  let tot=0;for(let id in cart){const x=PRODS.find(p=>p.id==id);if(x)tot+=x.p*cart[id];}
+  if(tot>0){dk.style.paddingBottom='64px';tg.MainButton.setText('ОФОРМИТЬ ЗАКАЗ • '+tot.toFixed(2)+' BYN');tg.MainButton.show();}
+  else{dk.style.paddingBottom='14px';tg.MainButton.hide();}
+}
+if(window.Telegram&&window.Telegram.WebApp){
+  const tg=window.Telegram.WebApp;tg.ready();tg.expand();
+  tg.MainButton.onClick(function(){
