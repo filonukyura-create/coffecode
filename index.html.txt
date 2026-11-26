@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Меню кофейни</title>
+  <script src="https://telegram.org"></script>
+  <style>
+    :root {
+      --bg: var(--tg-theme-bg-color, #ffffff);
+      --sec-bg: var(--tg-theme-secondary-bg-color, #f4f4f5);
+      --text: var(--tg-theme-text-color, #18181b);
+      --hint: var(--tg-theme-hint-color, #71717a);
+      --btn: var(--tg-theme-button-color, #2563eb);
+      --btn-text: var(--tg-theme-button-text-color, #ffffff);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 14px 14px 80px; }
+    
+    /* Шапка и настройки шаблона */
+    .header { margin-bottom: 14px; }
+    .header h1 { font-size: 20px; font-weight: 700; }
+    .header p { font-size: 13px; color: var(--hint); margin-top: 2px; }
+
+    /* Вкладки категорий */
+    .tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
+    .tab {
+      background: var(--sec-bg); color: var(--text); border: none;
+      padding: 8px 14px; border-radius: 20px; font-size: 14px; font-weight: 500;
+      cursor: pointer; white-space: nowrap; transition: 0.2s;
+    }
+    .tab.active { background: var(--btn); color: var(--btn-text); }
+
+    /* Сетка товаров */
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .card {
+      background: var(--sec-bg); border-radius: 16px; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .card img { width: 100%; height: 120px; object-fit: cover; background: #e4e4e7; }
+    .card-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
+    .card-title { font-size: 14px; font-weight: 600; line-height: 1.25; }
+    .card-desc { font-size: 11px; color: var(--hint); margin: 4px 0 10px; }
+    .card-price { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+
+    /* Кнопки добавления и счётчик */
+    .add-btn {
+      width: 100%; background: var(--btn); color: var(--btn-text);
+      border: none; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .counter {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg); border-radius: 10px; padding: 4px;
+    }
+    .counter button {
+      width: 28px; height: 28px; border: none; border-radius: 8px;
+      background: var(--btn); color: var(--btn-text); font-size: 16px; font-weight: 700; cursor: pointer;
+    }
+    .counter span { font-size: 14px; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <!-- НАСТРОЙКА ШАБЛОНА: Название кофейни -->
+    <h1 id="shopTitle">Кофейня «Зерно»</h1>
+    <p>Выберите напитки и выпечку к вашему приходу</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="filterMenu('all', this)">Все меню</button>
+    <button class="tab" onclick="filterMenu('coffee', this)">☕ Кофе</button>
+    <button class="tab" onclick="filterMenu('bakery', this)">🥐 Выпечка</button>
+  </div>
+
+  <div class="grid" id="menuGrid"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Раскрываем Mini App на весь экран
+
+    // НАСТРОЙКА ШАБЛОНА: Список товаров (легко менять под нового клиента)
+    const PRODUCTS = [
+      { id: 1, cat: 'coffee', name: 'Капучино (350 мл)', desc: '100% арабика и плотная молочная пенка', price: 6.00, img: 'https://unsplash.com' },
+      { id: 2, cat: 'coffee', name: 'Латте Карамель (350 мл)', desc: 'Нежный кофе с домашним карамельным сиропом', price: 7.00, img: 'https://unsplash.com' },
+      { id: 3, cat: 'coffee', name: 'Американо (250 мл)', desc: 'Классический чёрный кофе с золотистой пенкой', price: 4.50, img: 'https://unsplash.com' },
+      { id: 4, cat: 'coffee', name: 'Флэт Уайт (250 мл)', desc: 'Двойной эспрессо с тонким слоем микропены', price: 6.50, img: 'https://unsplash.com' },
+      { id: 5, cat: 'bakery', name: 'Круассан сливочный', desc: 'Хрустящая слоёная выпечка на фермерском масле', price: 5.00, img: 'https://unsplash.com' },
+      { id: 6, cat: 'bakery', name: 'Чизкейк Нью-Йорк', desc: 'Классический сливочный десерт на песочной основе', price: 7.50, img: 'https://unsplash.com' }
+    ];
+
+    let cart = {};
+    let currentCat = 'all';
+
+    function renderMenu() {
+      const grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+      PRODUCTS.filter(p => currentCat === 'all' || p.cat === currentCat).forEach(p => {
+        const qty = cart[p.id] || 0;
+        const btnHtml = qty === 0
+          ? `<button class="add-btn" onclick="changeQty(${p.id}, 1)">+ Добавить</button>`
+          : `<div class="counter">
+               <button onclick="changeQty(${p.id}, -1)">−</button>
+               <span>${qty} шт</span>
+               <button onclick="changeQty(${p.id}, 1)">+</button>
+             </div>`;
+        grid.innerHTML += `
+          <div class="card">
+            <img src="${p.img}" alt="${p.name}">
+            <div class="card-body">
+              <div>
+                <div class="card-title">${p.name}</div>
+                <div class="card-desc">${p.desc}</div>
+              </div>
+              <div>
+                <div class="card-price">${p.price.toFixed(2)} BYN</div>
+                ${btnHtml}
+              </div>
+            </div>
+          </div>`;
+      });
+    }
+
+    function filterMenu(cat, el) {
+      currentCat = cat;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderMenu();
+    }
+
+    function changeQty(id, delta) {
+      cart[id] = (cart[id] || 0) + delta;
+      if (cart[id] <= 0) delete cart[id];
+      renderMenu();
+      updateMainButton();
+    }
+
+    function updateMainButton() {
+      let total = 0;
+      for (const [id, qty] of Object.entries(cart)) {
+        const item = PRODUCTS.find(p => p.id == id);
+        if (item) total += item.price * qty;
+      }
+      if (total > 0) {
+        tg.MainButton.setText(`ОФОРМИТЬ ЗАКАЗ • ${total.toFixed(2)} BYN`);
+        tg.MainButton.show();
+      } else {
+        tg.MainButton.hide();
+      }
+    }
+
+    // Отправка заказа обратно в бот (Botmother) при нажатии синей кнопки внизу
+    tg.MainButton.onClick(() => {
+      let itemsList = [];
+      let total = 0;
+      for (const [id, qty] of Object.entries(cart)) {
+        const item = PRODUCTS.find(p => p.id == id);
+        if (item) {
+          itemsList.push(`${item.name} × ${qty} шт.`);
+          total += item.price * qty;
+        }
+      }
+      const orderPayload = {
+        items: itemsList.join(', '),
+        total: Number(total.toFixed(2))
+      };
+      tg.sendData(JSON.stringify(orderPayload));
+    });
+
+    renderMenu();
+  </script>
+</body>
+</html>
