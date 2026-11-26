@@ -8,21 +8,21 @@ const CONFIG = {
 };
 
 const CATS = [
-  { id: "coffee", t: "☕ Кофе", s: "Классика и авторский", i: "https://unsplash.com" },
-  { id: "combo", t: "🥐 Комбо", s: "Выгодные наборы", i: "https://unsplash.com" },
-  { id: "iced", t: "🧊 Напитки", s: "Айс-кофе и лимонады", i: "https://unsplash.com" },
-  { id: "food", t: "🥪 Еда", s: "Сэндвичи и десерты", i: "https://unsplash.com" }
+  { id: "coffee", t: "☕ Кофе", s: "Классика и авторский", i: "https://loremflickr.com" },
+  { id: "combo", t: "🥐 Комбо", s: "Выгодные наборы", i: "https://loremflickr.com" },
+  { id: "iced", t: "🧊 Напитки", s: "Айс-кофе и лимонады", i: "https://loremflickr.com" },
+  { id: "food", t: "🥪 Еда", s: "Сэндвичи и десерты", i: "https://loremflickr.com" }
 ];
 
 const PRODS = [
-  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная молочная пенка", p: 6.00, i: "https://unsplash.com" },
-  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с бархатной микропеной", p: 6.50, i: "https://unsplash.com" },
-  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и классический капучино", p: 9.50, i: "https://unsplash.com" },
-  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной и чёрный кофе", p: 11.00, i: "https://unsplash.com" },
-  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе со льдом и карамелью", p: 7.00, i: "https://unsplash.com" },
-  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Бодрящий эспрессо со швепсом и лаймом", p: 7.50, i: "https://unsplash.com" },
-  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, филе индейки, творожный сыр", p: 8.50, i: "https://unsplash.com" },
-  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Нежный сливочный десерт на песочной основе", p: 7.50, i: "https://unsplash.com" }
+  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная молочная пенка", p: 6.00, i: "https://loremflickr.com" },
+  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с бархатной микропеной", p: 6.50, i: "https://loremflickr.com" },
+  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и классический капучино", p: 9.50, i: "https://loremflickr.com" },
+  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной и чёрный кофе", p: 11.00, i: "https://loremflickr.com" },
+  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе со льдом и карамелью", p: 7.00, i: "https://loremflickr.com" },
+  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Бодрящий эспрессо со швепсом и лаймом", p: 7.50, i: "https://loremflickr.com" },
+  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, филе индейки, творожный сыр", p: 8.50, i: "https://loremflickr.com" },
+  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Нежный сливочный десерт на песочной основе", p: 7.50, i: "https://loremflickr.com" }
 ];
 
 let cart = {};
@@ -242,3 +242,4 @@ if (window.Telegram && window.Telegram.WebApp) {
 }
 
 render();
+
