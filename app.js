@@ -8,14 +8,29 @@ const CONFIG = {
 };
 
 function makeArt(bg1, bg2, emoji, label) {
-  const svg = `<svg xmlns="http://w3.org" width="400" height="300" viewBox="0 0 400 300">
-    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="${bg1}"/><stop offset="100%" stop-color="${bg2}"/></linearGradient></defs>
-    <rect width="400" height="300" rx="24" fill="url(#g)"/>
-    <circle cx="330" cy="60" r="70" fill="rgba(255,255,255,0.12)"/>
-    <text x="200" y="145" font-size="86" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
-    <text x="200" y="240" font-family="sans-serif" font-size="22" font-weight="bold" fill="rgba(255,255,255,0.92)" text-anchor="middle">${label}</text>
-  </svg>`;
-  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  const c = document.createElement("canvas");
+  c.width = 400;
+  c.height = 300;
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0, 0, 400, 300);
+  g.addColorStop(0, bg1);
+  g.addColorStop(1, bg2);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 400, 300);
+  ctx.fillStyle = "rgba(255,255,255,0.12)";
+  ctx.beginPath();
+  ctx.arc(330, 60, 70, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.font = "96px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(emoji, 200, 135);
+  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.font = "bold 22px sans-serif";
+  ctx.fillText(label, 200, 240);
+  return c.toDataURL("image/png");
+}
+
 }
 
 const CATS = [
