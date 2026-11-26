@@ -35,92 +35,93 @@ body{background:var(--bg);color:var(--txt);padding:10px 14px 120px;max-width:540
 </style>
 </head>
 <body>
-<div class="bh" onclick="openM('bonus')">
+<div class="bh" id="btnTopBonus">
   <b style="font-size:14px">Кофейня «Зерно»</b>
-  <span class="bb" id="bb">🎁 100 баллов</span>
+  <span class="bb">🎁 100 баллов</span>
 </div>
 <div class="top">
-  <button class="geo" onclick="openM('geo')">📍 Гео</button>
-  <div class="srch"><span>🔍</span><input type="text" placeholder="Поиск напитков и еды..." oninput="q=this.value;render()"></div>
+  <button class="geo" id="btnGeo">📍 Гео</button>
+  <div class="srch"><span>🔍</span><input type="text" id="inpSearch" placeholder="Поиск напитков и еды..."></div>
 </div>
 <div id="app"></div>
 <div class="dock" id="dock">
-  <button class="db" style="background:var(--sec);color:var(--txt)" onclick="openM('write')">💬 Написать бариста</button>
-  <button class="db" style="background:var(--btn);color:var(--btxt);border:none" onclick="openM('bonus')">🎁 Мои бонусы</button>
+  <button class="db" id="btnWrite" style="background:var(--sec);color:var(--txt)">💬 Написать бариста</button>
+  <button class="db" id="btnBonus" style="background:var(--btn);color:var(--btxt);border:none">🎁 Мои бонусы</button>
 </div>
-<div class="ov" id="ov" onclick="if(event.target===this)closeM()">
+<div class="ov" id="ov">
   <div class="sh">
     <h3 id="mt" style="font-size:18px;margin-bottom:6px"></h3>
     <div id="mm"></div>
     <p id="mx" style="font-size:14px;color:var(--hint);line-height:1.45;margin-bottom:14px;white-space:pre-line"></p>
     <div id="ma"></div>
-    <button class="db" style="background:var(--sec);color:var(--txt);border:none" onclick="closeM()">Закрыть</button>
+    <button class="db" id="btnClose" style="background:var(--sec);color:var(--txt);border:none">Закрыть</button>
   </div>
 </div>
 <script>
 const CATS=[
-  {id:'coffee',t:'Кофе',s:'Классика и авторский',i:'https://unsplash.com'},
-  {id:'combo',t:'Комбо',s:'Выгодные наборы',i:'https://unsplash.com'},
-  {id:'iced',t:'Напитки',s:'Айс-кофе и лимонады',i:'https://unsplash.com'},
-  {id:'food',t:'Еда',s:'Сэндвичи и десерты',i:'https://unsplash.com'}
+  {id:"coffee",t:"Кофе",s:"Классика и авторский",i:"https://unsplash.com"},
+  {id:"combo",t:"Комбо",s:"Выгодные наборы",i:"https://unsplash.com"},
+  {id:"iced",t:"Напитки",s:"Айс-кофе и лимонады",i:"https://unsplash.com"},
+  {id:"food",t:"Еда",s:"Сэндвичи и десерты",i:"https://unsplash.com"}
 ];
 const PRODS=[
-  {id:1,c:'coffee',n:'Капучино (350 мл)',d:'100% арабика и плотная пенка',p:6,i:'https://unsplash.com'},
-  {id:2,c:'coffee',n:'Флэт Уайт (250 мл)',d:'Двойной эспрессо с микропеной',p:6.5,i:'https://unsplash.com'},
-  {id:3,c:'combo',n:'Круассан + Капучино',d:'Идеальный утренний сет',p:9.5,i:'https://unsplash.com'},
-  {id:4,c:'combo',n:'Сырники + Американо',d:'Домашние сырники со сметаной',p:11,i:'https://unsplash.com'},
-  {id:5,c:'iced',n:'Айс Латте Карамель',d:'Охлаждённый кофе со льдом',p:7,i:'https://unsplash.com'},
-  {id:6,c:'iced',n:'Эспрессо-тоник',d:'Освежающий микс с тоником',p:7.5,i:'https://unsplash.com'},
-  {id:7,c:'food',n:'Бейгл с индейкой',d:'Свежий бейгл, сыр, зелень',p:8.5,i:'https://unsplash.com'},
-  {id:8,c:'food',n:'Чизкейк Нью-Йорк',d:'Классический сливочный десерт',p:7.5,i:'https://unsplash.com'}
+  {id:1,c:"coffee",n:"Капучино (350 мл)",d:"100% арабика и плотная пенка",p:6,i:"https://unsplash.com"},
+  {id:2,c:"coffee",n:"Флэт Уайт (250 мл)",d:"Двойной эспрессо с микропеной",p:6.5,i:"https://unsplash.com"},
+  {id:3,c:"combo",n:"Круассан + Капучино",d:"Идеальный утренний сет",p:9.5,i:"https://unsplash.com"},
+  {id:4,c:"combo",n:"Сырники + Американо",d:"Домашние сырники со сметаной",p:11,i:"https://unsplash.com"},
+  {id:5,c:"iced",n:"Айс Латте Карамель",d:"Охлаждённый кофе со льдом",p:7,i:"https://unsplash.com"},
+  {id:6,c:"iced",n:"Эспрессо-тоник",d:"Освежающий микс с тоником",p:7.5,i:"https://unsplash.com"},
+  {id:7,c:"food",n:"Бейгл с индейкой",d:"Свежий бейгл, сыр, зелень",p:8.5,i:"https://unsplash.com"},
+  {id:8,c:"food",n:"Чизкейк Нью-Йорк",d:"Классический сливочный десерт",p:7.5,i:"https://unsplash.com"}
 ];
-let cart={},cat=null,q='';
+let cart={},cat=null,q="";
 function render(){
-  const a=document.getElementById('app');
+  const a=document.getElementById("app");
   if(q.trim()){
     const f=PRODS.filter(x=>x.n.toLowerCase().includes(q.toLowerCase()));
     a.innerHTML='<div style="margin-bottom:12px;font-weight:700">Найдено ('+f.length+')</div>'+pGrid(f);return;
   }
   if(cat){
     const c=CATS.find(x=>x.id===cat);
-    a.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button class="geo" onclick="cat=null;render()">← Назад</button><b>'+c.t+'</b></div>'+pGrid(PRODS.filter(x=>x.c===cat));return;
+    a.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><button class="geo" onclick="setCat(null)">← Назад</button><b>'+c.t+'</b></div>'+pGrid(PRODS.filter(x=>x.c===cat));return;
   }
-  a.innerHTML='<div class="grid">'+CATS.map(c=>'<div class="cc" onclick="cat=\''+c.id+'\';render()"><div><b>'+c.t+'</b><div style="font-size:12px;color:var(--hint)">'+c.s+'</div></div><img src="'+c.i+'"></div>').join('')+'</div>';
+  a.innerHTML='<div class="grid">'+CATS.map(c=>'<div class="cc" data-cat="'+c.id+'" onclick="setCat(this.dataset.cat)"><div><b>'+c.t+'</b><div style="font-size:12px;color:var(--hint)">'+c.s+'</div></div><img src="'+c.i+'"></div>').join("")+'</div>';
 }
+function setCat(id){cat=id;render();}
 function pGrid(list){
   if(!list.length)return'<p style="color:var(--hint)">Ничего не найдено 😔</p>';
   return'<div class="grid">'+list.map(p=>{
     const n=cart[p.id]||0;
     const b=n===0?'<button class="ab" onclick="chg('+p.id+',1)">+ В корзину</button>':'<div class="cnt"><button onclick="chg('+p.id+',-1)">−</button><span>'+n+' шт</span><button onclick="chg('+p.id+',1)">+</button></div>';
     return'<div class="pc"><img src="'+p.i+'"><div class="pb"><div><b style="font-size:14px">'+p.n+'</b><div style="font-size:11px;color:var(--hint);margin:4px 0 8px">'+p.d+'</div></div><div><div style="font-weight:700;margin-bottom:8px">'+p.p.toFixed(2)+' BYN</div>'+b+'</div></div></div>';
-  }).join('')+'</div>';
+  }).join("")+'</div>';
 }
 function chg(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];render();upBtn();}
 function openM(t){
-  const mt=document.getElementById('mt'),mx=document.getElementById('mx'),mm=document.getElementById('mm'),ma=document.getElementById('ma');
-  mm.innerHTML='';ma.innerHTML='';
-  if(t==='geo'){
-    mt.innerText='Кофейня «Зерно»';
+  const mt=document.getElementById("mt"),mx=document.getElementById("mx"),mm=document.getElementById("mm"),ma=document.getElementById("ma");
+  mm.innerHTML="";ma.innerHTML="";
+  if(t==="geo"){
+    mt.innerText="Кофейня «Зерно»";
     mm.innerHTML='<div class="mf"><iframe width="100%" height="100%" frameborder="0" src="https://openstreetmap.org"></iframe></div>';
-    mx.innerText='📍 г. Минск, ул. Ломоносова, 6\n🕒 Время работы: ежедневно с 07:00 до 19:00';
+    mx.innerText="📍 г. Минск, ул. Ломоносова, 6\n🕒 Время работы: ежедневно с 07:00 до 19:00";
     ma.innerHTML='<a class="rb" href="https://yandex.by" target="_blank">🗺 Открыть в Яндекс.Картах</a>';
-  }else if(t==='bonus'){
-    mt.innerText='🎁 Программа лояльности';
-    mx.innerText='• Ваш баланс: 100 баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу при оформлении заказа!';
+  }else if(t==="bonus"){
+    mt.innerText="🎁 Программа лояльности";
+    mx.innerText="• Ваш баланс: 100 баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу при оформлении заказа!";
   }else{
-    mt.innerText='💬 Связь с бариста';
-    mx.innerText='Есть вопрос по заказу или меню? Напишите нам напрямую в Telegram: @zerno_barista';
+    mt.innerText="💬 Связь с бариста";
+    mx.innerText="Есть вопрос по заказу или меню? Напишите нам напрямую в Telegram: @zerno_barista";
   }
-  document.getElementById('ov').classList.add('open');
+  document.getElementById("ov").classList.add("open");
 }
-function closeM(){document.getElementById('ov').classList.remove('open');}
+function closeM(){document.getElementById("ov").classList.remove("open");}
+document.getElementById("btnGeo").onclick=()=>openM("geo");
+document.getElementById("btnBonus").onclick=()=>openM("bonus");
+document.getElementById("btnTopBonus").onclick=()=>openM("bonus");
+document.getElementById("btnWrite").onclick=()=>openM("write");
+document.getElementById("btnClose").onclick=closeM;
+document.getElementById("ov").onclick=(e)=>{if(e.target.id==="ov")closeM();};
+document.getElementById("inpSearch").oninput=(e)=>{q=e.target.value;render();};
 function upBtn(){
   if(!window.Telegram||!window.Telegram.WebApp)return;
-  const tg=window.Telegram.WebApp,dk=document.getElementById('dock');
-  let tot=0;for(let id in cart){const x=PRODS.find(p=>p.id==id);if(x)tot+=x.p*cart[id];}
-  if(tot>0){dk.style.paddingBottom='64px';tg.MainButton.setText('ОФОРМИТЬ ЗАКАЗ • '+tot.toFixed(2)+' BYN');tg.MainButton.show();}
-  else{dk.style.paddingBottom='14px';tg.MainButton.hide();}
-}
-if(window.Telegram&&window.Telegram.WebApp){
-  const tg=window.Telegram.WebApp;tg.ready();tg.expand();
-  tg.MainButton.onClick(function(){
+  const tg=window.Telegram.WebApp,dk=document.getElementById("dock");
