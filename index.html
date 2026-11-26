@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -18,10 +17,22 @@ html
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); padding: 12px 14px 120px; max-width: 540px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--text); padding: 10px 14px 120px; max-width: 540px; margin: 0 auto; }
 
-    /* Верхняя панель: Гео + Поиск */
-    .top-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; position: sticky; top: 0; background: var(--bg); padding: 4px 0 8px; z-index: 10; }
+    /* Верхняя плашка с балансом бонусов */
+    .bonus-header {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--sec-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 10px 14px; margin-bottom: 10px;
+    }
+    .bonus-shop { font-size: 14px; font-weight: 700; }
+    .bonus-badge {
+      background: var(--btn); color: var(--btn-text);
+      padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700;
+    }
+
+    /* Панель: Гео + Поиск */
+    .top-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; position: sticky; top: 0; background: var(--bg); padding: 4px 0 8px; z-index: 10; }
     .geo-btn {
       display: flex; align-items: center; gap: 4px; background: var(--sec-bg); color: var(--text);
       border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
@@ -35,22 +46,22 @@ html
     .search-box input::placeholder { color: var(--hint); }
     .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--hint); pointer-events: none; }
 
-    /* Сетка 2x2 категорий (главный экран по макету) */
+    /* Сетка 2x2 категорий */
     .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .cat-card {
       background: var(--sec-bg); border: 1px solid var(--border); border-radius: 18px;
       padding: 14px; display: flex; flex-direction: column; justify-content: space-between;
-      aspect-ratio: 1 / 1.05; cursor: pointer; transition: transform 0.15s; overflow: hidden; position: relative;
+      aspect-ratio: 1 / 1.05; cursor: pointer; transition: transform 0.15s; overflow: hidden;
     }
     .cat-card:active { transform: scale(0.97); }
-    .cat-title { font-size: 16px; font-weight: 700; z-index: 2; }
-    .cat-sub { font-size: 12px; color: var(--hint); margin-top: 2px; z-index: 2; }
+    .cat-title { font-size: 16px; font-weight: 700; }
+    .cat-sub { font-size: 12px; color: var(--hint); margin-top: 2px; }
     .cat-img {
       width: 85%; height: 65%; object-fit: cover; border-radius: 12px;
       align-self: flex-end; margin-top: auto;
     }
 
-    /* Шапка внутри выбранной категории */
+    /* Внутри категории */
     .sub-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .back-btn {
       background: var(--sec-bg); color: var(--text); border: 1px solid var(--border);
@@ -58,7 +69,7 @@ html
     }
     .sub-title { font-size: 18px; font-weight: 700; }
 
-    /* Сетка товаров */
+    /* Товары */
     .prod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
     .prod-card {
       background: var(--sec-bg); border: 1px solid var(--border); border-radius: 16px;
@@ -84,7 +95,7 @@ html
     }
     .counter span { font-size: 13px; font-weight: 600; }
 
-    /* Нижняя панель из макета: Написать + Бонусы */
+    /* Нижняя панель */
     .bottom-dock {
       position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg);
       border-top: 1px solid var(--border); padding: 10px 14px 14px;
@@ -97,7 +108,7 @@ html
     .dock-write { background: var(--sec-bg); color: var(--text); }
     .dock-bonus { background: var(--btn); color: var(--btn-text); border: none; }
 
-    /* Всплывающее окно (Модалка для Гео, Бонусов и Написать) */
+    /* Модалка */
     .modal-overlay {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
       z-index: 50; align-items: flex-end; justify-content: center;
@@ -105,11 +116,10 @@ html
     .modal-overlay.open { display: flex; }
     .modal-sheet {
       background: var(--bg); color: var(--text); width: 100%; max-width: 540px;
-      border-radius: 20px 20px 0 0; padding: 20px 16px 28px; animation: slideUp 0.2s ease-out;
+      border-radius: 20px 20px 0 0; padding: 20px 16px 28px;
     }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-    .modal-text { font-size: 14px; color: var(--hint); line-height: 1.45; margin-bottom: 16px; }
+    .modal-text { font-size: 14px; color: var(--hint); line-height: 1.45; margin-bottom: 16px; white-space: pre-line; }
     .modal-close {
       width: 100%; background: var(--sec-bg); color: var(--text); border: none;
       padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
@@ -118,7 +128,13 @@ html
 </head>
 <body>
 
-  <!-- ВЕРХНЯЯ ПАНЕЛЬ: ГЕО + ПОИСК -->
+  <!-- ВЕРХНЯЯ ПЛАШКА: НАЗВАНИЕ + БАЛАНС БОНУСОВ -->
+  <div class="bonus-header" onclick="openModal('bonus')">
+    <div class="bonus-shop" id="shopTitle">Кофейня «Зерно»</div>
+    <div class="bonus-badge" id="bonusBadge">🎁 100 баллов</div>
+  </div>
+
+  <!-- ГЕО + ПОИСК -->
   <div class="top-bar">
     <button class="geo-btn" onclick="openModal('geo')">📍 Гео</button>
     <div class="search-box">
@@ -127,16 +143,16 @@ html
     </div>
   </div>
 
-  <!-- ОСНОВНОЙ КОНТЕНТ (Меняется между сеткой 2x2 и списком товаров) -->
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
   <div id="mainContent"></div>
 
-  <!-- НИЖНЯЯ ПАНЕЛЬ ИЗ МАКЕТА: НАПИСАТЬ + БОНУСЫ -->
+  <!-- НИЖНЯЯ ПАНЕЛЬ -->
   <div class="bottom-dock" id="bottomDock">
     <button class="dock-btn dock-write" onclick="openModal('write')">💬 Написать бариста</button>
     <button class="dock-btn dock-bonus" onclick="openModal('bonus')">🎁 Мои бонусы</button>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ГЕО / БОНУСОВ / ЧАТА -->
+  <!-- МОДАЛЬНОЕ ОКНО -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal-sheet" onclick="event.stopPropagation()">
       <div class="modal-title" id="modalTitle"></div>
@@ -146,15 +162,18 @@ html
   </div>
 
   <script>
-    // ==========================================
-    // НАСТРОЙКИ ШАБЛОНА ПОД КЛИЕНТА (МЕНЯТЬ ТУТ)
-    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const userBalance = urlParams.get('balance') || '100';
+
     const CONFIG = {
       shopName: 'Кофейня «Зерно»',
       address: 'ул. Советская, 45\nЕжедневно с 08:00 до 21:00',
-      baristaUsername: 'zerno_barista', // юзернейм бариста без @
-      bonusInfo: '• Ваш приветственный бонус: 100 баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу после оформления корзины!'
+      baristaUsername: 'zerno_barista',
+      bonusInfo: '• Ваш баланс: ' + userBalance + ' баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%\n\nСписать баллы можно сразу после оформления корзины!'
     };
+
+    document.getElementById('shopTitle').innerText = CONFIG.shopName;
+    document.getElementById('bonusBadge').innerText = '🎁 ' + userBalance + ' баллов';
 
     const CATEGORIES = [
       { id: 'coffee', title: 'Кофе', sub: 'Классика и авторский', img: 'https://unsplash.com' },
@@ -169,127 +188,3 @@ html
       { id: 3, cat: 'combo', name: 'Круассан + Капучино', desc: 'Идеальный утренний сет', price: 9.50, img: 'https://unsplash.com' },
       { id: 4, cat: 'combo', name: 'Сырники + Американо', desc: 'Домашние сырники со сметаной', price: 11.00, img: 'https://unsplash.com' },
       { id: 5, cat: 'iced', name: 'Айс Латте Карамель', desc: 'Охлаждённый кофе со льдом', price: 7.00, img: 'https://unsplash.com' },
-      { id: 6, cat: 'iced', name: 'Эспрессо-тоник', desc: 'Освежающий микс с тоником и лаймом', price: 7.50, img: 'https://unsplash.com' },
-      { id: 7, cat: 'food', name: 'Бейгл с индейкой', desc: 'Свежий бейгл, творожный сыр, зелень', price: 8.50, img: 'https://unsplash.com' },
-      { id: 8, cat: 'food', name: 'Чизкейк Нью-Йорк', desc: 'Классический сливочный десерт', price: 7.50, img: 'https://unsplash.com' }
-Используйте код с осторожностью.
-];
-let cart = {};
-let activeCat = null;
-let searchQuery = '';
-function render() {
-const container = document.getElementById('mainContent');
-// Если введён поиск — показываем найденные товары
-if (searchQuery.trim() !== '') {
-const filtered = PRODUCTS.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-container.innerHTML = <div class="sub-header"> <div class="sub-title">Результаты поиска (${filtered.length})</div> </div> ${renderProductGrid(filtered)};
-return;
-}
-// Если выбрана категория — показываем товары категории + кнопку Назад
-if (activeCat) {
-const catObj = CATEGORIES.find(c => c.id === activeCat);
-const filtered = PRODUCTS.filter(p => p.cat === activeCat);
-container.innerHTML = <div class="sub-header"> <button class="back-btn" onclick="openCategory(null)">← Назад</button> <div class="sub-title">${catObj.title}</div> </div> ${renderProductGrid(filtered)};
-return;
-}
-// Главный экран: сетка 2x2 из твоего рисунка
-container.innerHTML = <div class="cat-grid"> ${CATEGORIES.map(c =>
-
-
-${c.title}
-${c.sub}
-
-
-
-).join('')} </div> ;
-}
-function renderProductGrid(list) {
-if (list.length === 0) return 'Ничего не найдено 😔';
-return <div class="prod-grid">${list.map(p => { const q = cart[p.id] || 0; const btn = q === 0 ? + В корзину:−${q} шт+; return 
-
-
-
-
-${p.name}
-${p.desc}
-
-
-${p.price.toFixed(2)} BYN
-${btn}
-
-
-; }).join('')}</div>;
-}
-function openCategory(id) {
-activeCat = id;
-render();
-}
-function handleSearch(val) {
-searchQuery = val;
-render();
-}
-function changeQty(id, delta) {
-cart[id] = (cart[id] || 0) + delta;
-if (cart[id] <= 0) delete cart[id];
-render();
-updateTgMainButton();
-}
-function openModal(type) {
-const title = document.getElementById('modalTitle');
-const text = document.getElementById('modalText');
-if (type === 'geo') {
-title.innerText = '📍 ' + CONFIG.shopName;
-text.innerText = CONFIG.address;
-} else if (type === 'bonus') {
-title.innerText = '🎁 Программа лояльности';
-text.innerText = CONFIG.bonusInfo;
-} else if (type === 'write') {
-title.innerText = '💬 Связь с бариста';
-text.innerText = 'Есть вопрос по заказу или хотите уточнить наличие десертов? Напишите нам напрямую в Telegram: @' + CONFIG.baristaUsername;
-}
-document.getElementById('modalOverlay').classList.add('open');
-}
-function closeModal(e) {
-if (e.target.id === 'modalOverlay') forceCloseModal();
-}
-function forceCloseModal() {
-document.getElementById('modalOverlay').classList.remove('open');
-}
-function updateTgMainButton() {
-if (!window.Telegram || !window.Telegram.WebApp) return;
-const tg = window.Telegram.WebApp;
-const dock = document.getElementById('bottomDock');
-let total = 0;
-for (let id in cart) {
-const item = PRODUCTS.find(p => p.id == id);
-if (item) total += item.price * cart[id];
-}
-if (total > 0) {
-dock.style.paddingBottom = '64px'; // освобождаем место под синюю кнопку ТГ
-tg.MainButton.setText('ОФОРМИТЬ ЗАКАЗ • ' + total.toFixed(2) + ' BYN');
-tg.MainButton.show();
-} else {
-dock.style.paddingBottom = '14px';
-tg.MainButton.hide();
-}
-}
-if (window.Telegram && window.Telegram.WebApp) {
-const tg = window.Telegram.WebApp;
-tg.ready();
-tg.expand();
-tg.MainButton.onClick(function() {
-let items = [];
-let total = 0;
-for (let id in cart) {
-const item = PRODUCTS.find(p => p.id == id);
-if (item) {
-items.push(item.name + ' x' + cart[id]);
-total += item.price * cart[id];
-}
-}
-tg.sendData(JSON.stringify({ items: items.join(', '), total: Number(total.toFixed(2)) }));
-});
-}
-render();
-
-    
