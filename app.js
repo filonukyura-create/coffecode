@@ -173,29 +173,32 @@ function getTotals() {
 }
 
 function sendOrder() {
-  let it = [];
-  for (const id in cart) {
-    const x = PRODS.find(p => p.id == id);
-    if (x) it.push(x.n + " x" + cart[id]);
-  }
   const t = getTotals();
   if (t.qty <= 0) return;
 
-  const orderText =
-    "Заказ: " + it.join(", ") +
-    " | Списано баллов: " + t.spentPoints +
-    " | Итого: " + t.finalTotal.toFixed(2) + " BYN";
-
-  const botLink = "https://" + "t.me/coffeeprobnik_bot?text=" + encodeURIComponent(orderText);
-
-  if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.openTelegramLink(botLink);
-    setTimeout(function() {
-      window.Telegram.WebApp.close();
-    }, 300);
-  } else {
-    window.top.location.href = botLink;
+  if (!window.Telegram || !window.Telegram.WebApp || !window.Telegram.WebApp.initData) {
+    alert("Откройте приложение внутри Telegram");
+    return;
   }
+
+  fetch(API_URL + "/api/order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      initData: window.Telegram.WebApp.initData,
+      cart: cart,
+      useBonus: useBonus
+    })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        window.Telegram.WebApp.close();
+      } else {
+        alert("Ошибка оформления заказа. Попробуйте ещё раз.");
+      }
+    })
+    .catch(() => alert("Сервер запускается, подождите 10 секунд и нажмите снова."));
 }
 
 
