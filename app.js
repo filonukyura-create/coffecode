@@ -29,7 +29,6 @@ function makeArt(bg1, bg2, emoji, label) {
   ctx.font = "bold 22px sans-serif";
   ctx.fillText(label, 200, 240);
   return c.toDataURL("image/png");
-}
 
 }
 
