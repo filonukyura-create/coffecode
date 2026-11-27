@@ -163,7 +163,8 @@ function sendOrder() {
     " | Списано баллов: " + t.spentPoints +
     " | Итого: " + t.finalTotal.toFixed(2) + " BYN";
 
-  const botLink = "https://t.mecoffeeprobnik_bot?text=" + encodeURIComponent(orderText);
+ const botLink = "https://" + "t.me/coffeeprobnik_bot?text=" + encodeURIComponent(orderText);
+
 
   if (window.Telegram && window.Telegram.WebApp) {
     window.Telegram.WebApp.openTelegramLink(botLink);
