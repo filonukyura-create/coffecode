@@ -21,6 +21,18 @@ if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData
     .catch(() => {});
 }
 
+if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+  const uid = window.Telegram.WebApp.initDataUnsafe.user.id;
+  fetch(API_URL + "/api/balance/" + uid)
+    .then(r => r.json())
+    .then(d => {
+      CONFIG.bonus = Number(d.balance) || 0;
+      const b = document.querySelector(".bb");
+      if (b) b.textContent = "🎁 " + CONFIG.bonus + " баллов";
+    })
+    .catch(() => {});
+}
+
 const CATS = [
   { id: "coffee", t: "Кофе", s: "Классика и авторский", e: "☕", bg: "linear-gradient(135deg,#6f4e37,#3e2723)" },
   { id: "combo", t: "Комбо", s: "Выгодные наборы", e: "🥐", bg: "linear-gradient(135deg,#d97706,#92400e)" },
