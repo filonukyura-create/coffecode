@@ -1,64 +1,49 @@
+const urlParams = new URLSearchParams(window.location.search);
+const userBonus = Number(urlParams.get("balance")) || 100;
+
 const CONFIG = {
   shopName: "Кофейня «Зерно»",
   address: "📍 г. Минск, ул. Ломоносова, 6\n🕒 Время работы: ежедневно с 07:00 до 19:00",
   lat: 53.9261,
   lon: 27.5936,
   barista: "zerno_barista",
-  bonus: 100
+  bonus: userBonus
 };
 
-function makeArt(bg1, bg2, emoji, label) {
-  const c = document.createElement("canvas");
-  c.width = 400;
-  c.height = 300;
-  const ctx = c.getContext("2d");
-  const g = ctx.createLinearGradient(0, 0, 400, 300);
-  g.addColorStop(0, bg1);
-  g.addColorStop(1, bg2);
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 400, 300);
-  ctx.fillStyle = "rgba(255,255,255,0.12)";
-  ctx.beginPath();
-  ctx.arc(330, 60, 70, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.font = "96px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(emoji, 200, 135);
-  ctx.fillStyle = "rgba(255,255,255,0.92)";
-  ctx.font = "bold 22px sans-serif";
-  ctx.fillText(label, 200, 240);
-  return c.toDataURL("image/png");
-
-}
-
 const CATS = [
-  { id: "coffee", t: "☕ Кофе", s: "Классика и авторский", i: makeArt("#6f4e37", "#3e2723", "☕", "100% АРАБИКА") },
-  { id: "combo", t: "🥐 Комбо", s: "Выгодные наборы", i: makeArt("#d97706", "#92400e", "🥐", "ВЫГОДНЫЙ СЕТ") },
-  { id: "iced", t: "🧊 Напитки", s: "Айс-кофе и лимонады", i: makeArt("#0284c7", "#1e3a8a", "🧊", "ОСВЕЖАЕТ") },
-  { id: "food", t: "🥪 Еда", s: "Сэндвичи и десерты", i: makeArt("#059669", "#064e3b", "🥪", "СВЕЖЕЕ") }
+  { id: "coffee", t: "Кофе", s: "Классика и авторский", e: "☕", bg: "linear-gradient(135deg,#6f4e37,#3e2723)" },
+  { id: "combo", t: "Комбо", s: "Выгодные наборы", e: "🥐", bg: "linear-gradient(135deg,#d97706,#92400e)" },
+  { id: "iced", t: "Напитки", s: "Айс-кофе и лимонады", e: "🧊", bg: "linear-gradient(135deg,#0284c7,#1e3a8a)" },
+  { id: "food", t: "Еда", s: "Сэндвичи и десерты", e: "🥪", bg: "linear-gradient(135deg,#059669,#064e3b)" }
 ];
 
 const PRODS = [
-  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная молочная пенка", p: 6.00, i: makeArt("#78350f", "#451a03", "☕", "350 МЛ") },
-  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с бархатной микропеной", p: 6.50, i: makeArt("#5c4033", "#2b1b17", "🥛", "250 МЛ") },
-  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и классический капучино", p: 9.50, i: makeArt("#ea580c", "#7c2d12", "🥐", "ХИТ УТРА") },
-  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной и чёрный кофе", p: 11.00, i: makeArt("#d97706", "#78350f", "🥞", "ЗАВТРАК") },
-  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе со льдом и карамелью", p: 7.00, i: makeArt("#0ea5e9", "#0369a1", "🧋", "СО ЛЬДОМ") },
-  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Бодрящий эспрессо со швепсом и лаймом", p: 7.50, i: makeArt("#10b981", "#047857", "🍋", "ТОНИК") },
-  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, филе индейки, творожный сыр", p: 8.50, i: makeArt("#16a34a", "#14532d", "🥪", "СЫТНО") },
-  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Нежный сливочный десерт на песочной основе", p: 7.50, i: makeArt("#db2777", "#831843", "🍰", "ДЕСЕРТ") }
+  { id: 1, c: "coffee", n: "Капучино (350 мл)", d: "100% арабика и плотная пенка", p: 6.00, e: "☕", bg: "linear-gradient(135deg,#78350f,#451a03)" },
+  { id: 2, c: "coffee", n: "Флэт Уайт (250 мл)", d: "Двойной эспрессо с микропеной", p: 6.50, e: "🥛", bg: "linear-gradient(135deg,#5c4033,#2b1b17)" },
+  { id: 3, c: "combo", n: "Круассан + Капучино", d: "Хрустящий круассан и капучино", p: 9.50, e: "🥐", bg: "linear-gradient(135deg,#ea580c,#7c2d12)" },
+  { id: 4, c: "combo", n: "Сырники + Американо", d: "Тёплые сырники со сметаной", p: 11.00, e: "🥞", bg: "linear-gradient(135deg,#d97706,#78350f)" },
+  { id: 5, c: "iced", n: "Айс Латте Карамель", d: "Охлаждённый кофе с карамелью", p: 7.00, e: "🧋", bg: "linear-gradient(135deg,#0ea5e9,#0369a1)" },
+  { id: 6, c: "iced", n: "Эспрессо-тоник", d: "Эспрессо со швепсом и лаймом", p: 7.50, e: "🍋", bg: "linear-gradient(135deg,#10b981,#047857)" },
+  { id: 7, c: "food", n: "Сэндвич с индейкой", d: "Чиабатта, индейка, творожный сыр", p: 8.50, e: "🥪", bg: "linear-gradient(135deg,#16a34a,#14532d)" },
+  { id: 8, c: "food", n: "Чизкейк Нью-Йорк", d: "Классический сливочный десерт", p: 7.50, e: "🍰", bg: "linear-gradient(135deg,#db2777,#831843)" }
 ];
 
-let cart = {};
-let activeCat = null;
-let searchQ = "";
+let cart = {}, activeCat = null, searchQ = "", useBonus = false;
+
+const topBadge = document.querySelector(".bb");
+if (topBadge) topBadge.textContent = "🎁 " + CONFIG.bonus + " баллов";
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
   if (text !== undefined) n.textContent = text;
   return n;
+}
+
+function makeArtBox(bg, emoji, height, radius) {
+  const d = el("div", "", emoji);
+  d.style.cssText = "background:" + bg + ";height:" + height + ";border-radius:" + radius + ";display:flex;align-items:center;justify-content:center;font-size:44px;width:100%;margin-top:auto;";
+  return d;
 }
 
 function render() {
@@ -93,12 +78,10 @@ function render() {
     const info = el("div");
     info.appendChild(el("b", "", c.t));
     const sub = el("div", "", c.s);
-    sub.style.cssText = "font-size:12px;color:var(--hint)";
+    sub.style.cssText = "font-size:12px;color:var(--hint);margin-bottom:8px";
     info.appendChild(sub);
-    const img = el("img");
-    img.src = c.i;
     card.appendChild(info);
-    card.appendChild(img);
+    card.appendChild(makeArtBox(c.bg, c.e, "65%", "12px"));
     card.onclick = function() { activeCat = c.id; render(); };
     grid.appendChild(card);
   });
@@ -109,8 +92,7 @@ function buildGrid(list) {
   const grid = el("div", "grid");
   list.forEach(p => {
     const card = el("div", "pc");
-    const img = el("img");
-    img.src = p.i;
+    card.appendChild(makeArtBox(p.bg, p.e, "105px", "0"));
     const body = el("div", "pb");
     const top = el("div");
     const title = el("b", "", p.n);
@@ -141,7 +123,7 @@ function buildGrid(list) {
       bot.appendChild(cnt);
     }
     body.appendChild(top); body.appendChild(bot);
-    card.appendChild(img); card.appendChild(body);
+    card.appendChild(body);
     grid.appendChild(card);
   });
   return grid;
@@ -154,15 +136,33 @@ function chg(id, d) {
   upCartUI();
 }
 
-function sendOrder() {
-  let it = [], tot = 0;
+function getTotals() {
+  let rawTotal = 0, qty = 0;
   for (const id in cart) {
     const x = PRODS.find(p => p.id == id);
-    if (x) { it.push(x.n + " x" + cart[id]); tot += x.p * cart[id]; }
+    if (x) { rawTotal += x.p * cart[id]; qty += cart[id]; }
   }
-  if (tot <= 0) return;
+  const maxDiscount = Number((CONFIG.bonus / 100).toFixed(2));
+  const discount = (useBonus && CONFIG.bonus > 0) ? Math.min(rawTotal, maxDiscount) : 0;
+  const finalTotal = Number(Math.max(0, rawTotal - discount).toFixed(2));
+  const spentPoints = useBonus ? Math.round(discount * 100) : 0;
+  return { rawTotal, finalTotal, discount, spentPoints, qty };
+}
+
+function sendOrder() {
+  let it = [];
+  for (const id in cart) {
+    const x = PRODS.find(p => p.id == id);
+    if (x) it.push(x.n + " x" + cart[id]);
+  }
+  const t = getTotals();
+  if (t.qty <= 0) return;
   if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.sendData(JSON.stringify({ items: it.join(", "), total: Number(tot.toFixed(2)) }));
+    window.Telegram.WebApp.sendData(JSON.stringify({
+      items: it.join(", "),
+      total: t.finalTotal,
+      spent: t.spentPoints
+    }));
   }
 }
 
@@ -171,23 +171,19 @@ function upCartUI() {
   const topTotal = document.getElementById("cartTopTotal");
   const topCount = document.getElementById("cartTopCount");
   const dock = document.getElementById("bottomDock");
+  const t = getTotals();
 
-  let tot = 0, qty = 0;
-  for (const id in cart) {
-    const x = PRODS.find(p => p.id == id);
-    if (x) { tot += x.p * cart[id]; qty += cart[id]; }
-  }
-
-  if (tot > 0) {
+  if (t.qty > 0) {
     topBar.classList.add("show");
-    topTotal.textContent = "🛒 Корзина: " + tot.toFixed(2) + " BYN";
-    topCount.textContent = "Выбрано позиций: " + qty + " шт. (нажмите для проверки)";
+    topTotal.textContent = "🛒 Корзина: " + t.finalTotal.toFixed(2) + " BYN";
+    topCount.textContent = "Позиций: " + t.qty + " шт. (нажмите для оформления)";
     if (window.Telegram && window.Telegram.WebApp) {
       dock.style.paddingBottom = "64px";
-      window.Telegram.WebApp.MainButton.setText("ОПЛАТИТЬ ЗАКАЗ • " + tot.toFixed(2) + " BYN");
+      window.Telegram.WebApp.MainButton.setText("ОФОРМИТЬ ЗАКАЗ • " + t.finalTotal.toFixed(2) + " BYN");
       window.Telegram.WebApp.MainButton.show();
     }
   } else {
+    useBonus = false;
     topBar.classList.remove("show");
     if (window.Telegram && window.Telegram.WebApp) {
       dock.style.paddingBottom = "14px";
@@ -197,28 +193,52 @@ function upCartUI() {
 }
 
 function openM(t) {
-  const mt = document.getElementById("mt");
-  const mx = document.getElementById("mx");
-  const mm = document.getElementById("mm");
-  const ma = document.getElementById("ma");
+  const mt = document.getElementById("mt"), mx = document.getElementById("mx"), mm = document.getElementById("mm"), ma = document.getElementById("ma");
   mm.innerHTML = ""; ma.innerHTML = ""; mx.textContent = "";
 
   if (t === "cart") {
-    mt.textContent = "🛒 Ваш заказ";
-    let tot = 0;
+    const tot = getTotals();
+    if (tot.qty <= 0) return;
+    mt.textContent = "🛒 Оформление заказа";
+
     for (const id in cart) {
       const x = PRODS.find(p => p.id == id);
       if (x) {
-        const sum = x.p * cart[id];
-        tot += sum;
         const row = el("div", "cart-row");
         row.appendChild(el("span", "", x.n + " × " + cart[id]));
-        row.appendChild(el("b", "", sum.toFixed(2) + " BYN"));
+        row.appendChild(el("b", "", (x.p * cart[id]).toFixed(2) + " BYN"));
         mm.appendChild(row);
       }
     }
-    mx.textContent = "\nИтого к оплате: " + tot.toFixed(2) + " BYN\n(Списать бонусные баллы можно на следующем шаге в чате)";
-    const payBtn = el("button", "rb", "💳 Перейти к оплате • " + tot.toFixed(2) + " BYN");
+
+    if (CONFIG.bonus > 0) {
+      const maxDisc = Number((CONFIG.bonus / 100).toFixed(2));
+      const box = el("label", "");
+      box.style.cssText = "display:flex;align-items:center;justify-content:space-between;background:var(--sec);padding:12px;border-radius:12px;margin-top:12px;cursor:pointer;border:1px solid var(--brd)";
+      const left = el("div");
+      const title = el("b", "", "🎁 Списать " + CONFIG.bonus + " баллов?");
+      title.style.fontSize = "14px";
+      const sub = el("div", "", "Скидка −" + maxDisc.toFixed(2) + " BYN на этот заказ");
+      sub.style.cssText = "font-size:12px;color:var(--hint)";
+      left.appendChild(title); left.appendChild(sub);
+
+      const chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = useBonus;
+      chk.style.cssText = "width:20px;height:20px;accent-color:var(--btn)";
+      chk.onchange = function() {
+        useBonus = chk.checked;
+        upCartUI();
+        openM("cart");
+      };
+
+      box.appendChild(left);
+      box.appendChild(chk);
+      mm.appendChild(box);
+    }
+
+    mx.textContent = "\nИтого к оплате: " + tot.finalTotal.toFixed(2) + " BYN";
+    const payBtn = el("button", "rb", "💳 Перейти к оплате • " + tot.finalTotal.toFixed(2) + " BYN");
     payBtn.onclick = sendOrder;
     ma.appendChild(payBtn);
   } else if (t === "geo") {
@@ -227,41 +247,35 @@ function openM(t) {
     const ifr = el("iframe");
     ifr.width = "100%"; ifr.height = "100%"; ifr.frameBorder = "0";
     ifr.src = "https://openstreetmap.org";
-    wrap.appendChild(ifr);
-    mm.appendChild(wrap);
+    wrap.appendChild(ifr); mm.appendChild(wrap);
     mx.textContent = CONFIG.address;
     const a = el("a", "rb", "🗺 Открыть в Яндекс.Картах");
     a.href = "https://yandex.by";
-    a.target = "_blank";
-    ma.appendChild(a);
+    a.target = "_blank"; ma.appendChild(a);
   } else if (t === "bonus") {
     mt.textContent = "🎁 Программа лояльности";
     mx.textContent = "• Ваш баланс: " + CONFIG.bonus + " баллов\n• Курс: 100 баллов = 1 BYN\n• Кэшбэк с каждого заказа: 10%";
   } else {
     mt.textContent = "💬 Связь с бариста";
-    mx.textContent = "Есть вопрос по заказу или меню? Напишите нам в Telegram: @" + CONFIG.barista;
+    mx.textContent = "Напишите нам в Telegram: @" + CONFIG.barista;
   }
   document.getElementById("modalOverlay").classList.add("open");
 }
 
 function closeM() { document.getElementById("modalOverlay").classList.remove("open"); }
-
-document.getElementById("btnGeo").onclick = function() { openM("geo"); };
-document.getElementById("btnBonus").onclick = function() { openM("bonus"); };
-document.getElementById("btnTopBonus").onclick = function() { openM("bonus"); };
-document.getElementById("btnWrite").onclick = function() { openM("write"); };
-document.getElementById("btnOpenCart").onclick = function() { openM("cart"); };
-document.getElementById("btnTopPay").onclick = sendOrder;
+document.getElementById("btnGeo").onclick = () => openM("geo");
+document.getElementById("btnBonus").onclick = () => openM("bonus");
+document.getElementById("btnTopBonus").onclick = () => openM("bonus");
+document.getElementById("btnWrite").onclick = () => openM("write");
+document.getElementById("btnOpenCart").onclick = () => openM("cart");
+document.getElementById("btnTopPay").onclick = () => openM("cart");
 document.getElementById("btnClose").onclick = closeM;
-document.getElementById("modalOverlay").onclick = function(e) { if (e.target.id === "modalOverlay") closeM(); };
-document.getElementById("searchInput").oninput = function(e) { searchQ = e.target.value; render(); };
+document.getElementById("modalOverlay").onclick = (e) => { if (e.target.id === "modalOverlay") closeM(); };
+document.getElementById("searchInput").oninput = (e) => { searchQ = e.target.value; render(); };
 
 if (window.Telegram && window.Telegram.WebApp) {
   const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-  tg.MainButton.onClick(sendOrder);
+  tg.ready(); tg.expand();
+  tg.MainButton.onClick(() => openM("cart"));
 }
-
 render();
-
