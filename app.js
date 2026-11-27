@@ -157,12 +157,17 @@ function sendOrder() {
   }
   const t = getTotals();
   if (t.qty <= 0) return;
+
+  const orderText =
+    "Заказ: " + it.join(", ") +
+    " | Списано баллов: " + t.spentPoints +
+    " | Итого: " + t.finalTotal.toFixed(2) + " BYN";
+
+  const botLink = "https://t.me" + encodeURIComponent(orderText);
+
   if (window.Telegram && window.Telegram.WebApp) {
-    window.Telegram.WebApp.sendData(JSON.stringify({
-      items: it.join(", "),
-      total: t.finalTotal,
-      spent: t.spentPoints
-    }));
+    window.Telegram.WebApp.openTelegramLink(botLink);
+    window.Telegram.WebApp.close();
   }
 }
 
