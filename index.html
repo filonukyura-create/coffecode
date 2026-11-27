@@ -4,22 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Кофейня «Зерно»</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://telegram.org"></script>
   <style>
     :root { --bg: var(--tg-theme-bg-color, #fff); --sec: var(--tg-theme-secondary-bg-color, #f4f4f5); --txt: var(--tg-theme-text-color, #18181b); --hint: var(--tg-theme-hint-color, #71717a); --btn: var(--tg-theme-button-color, #2481cc); --btxt: var(--tg-theme-button-text-color, #fff); --brd: rgba(128,128,128,.18); }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--txt); padding: 12px 14px 125px; max-width: 540px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--txt); padding: 12px 14px 90px; max-width: 540px; margin: 0 auto; }
     .bh { display: flex; align-items: center; justify-content: space-between; background: var(--sec); border: 1px solid var(--brd); border-radius: 14px; padding: 10px 14px; margin-bottom: 10px; cursor: pointer; }
     .bb { background: var(--btn); color: var(--btxt); padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700; }
-
-    /* Верхняя всплывающая панель корзины с кнопкой оплаты */
-    .cart-top { display: none; align-items: center; justify-content: space-between; background: var(--sec); border: 1.5px solid var(--btn); border-radius: 14px; padding: 8px 10px 8px 14px; margin-bottom: 10px; gap: 10px; }
-    .cart-top.show { display: flex; }
-    .cart-info { display: flex; flex-direction: column; cursor: pointer; flex: 1; }
-    .cart-info b { font-size: 14px; }
-    .cart-info span { font-size: 11px; color: var(--hint); }
-    .pay-top-btn { background: var(--btn); color: var(--btxt); border: none; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
-
     .top { display: flex; gap: 8px; margin-bottom: 14px; position: sticky; top: 0; background: var(--bg); padding: 4px 0 8px; z-index: 10; }
     .geo { background: var(--sec); color: var(--txt); border: 1px solid var(--brd); border-radius: 12px; padding: 10px 12px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
     .srch { position: relative; flex: 1; }
@@ -28,15 +19,13 @@
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .cc { background: var(--sec); border: 1px solid var(--brd); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 1/1.05; cursor: pointer; overflow: hidden; }
     .cc:active { transform: scale(0.97); }
-    .cc img { width: 88%; height: 66%; object-fit: cover; border-radius: 12px; align-self: flex-end; margin-top: auto; }
     .pc { background: var(--sec); border: 1px solid var(--brd); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-    .pc img { width: 100%; height: 115px; object-fit: cover; }
     .pb { padding: 10px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
     .ab { width: 100%; background: var(--btn); color: var(--btxt); border: none; padding: 8px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
     .cnt { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border-radius: 10px; padding: 3px; border: 1px solid var(--brd); }
     .cnt button { width: 28px; height: 28px; border: none; border-radius: 8px; background: var(--btn); color: var(--btxt); font-size: 16px; font-weight: 700; cursor: pointer; }
-    .dock { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--brd); padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 8px; max-width: 540px; margin: 0 auto; z-index: 20; }
-    .db { width: 100%; padding: 11px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--brd); }
+    .dock { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--brd); padding: 8px 14px 10px; display: flex; flex-direction: row; gap: 8px; max-width: 540px; margin: 0 auto; z-index: 20; }
+    .db { flex: 1; padding: 10px 8px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--brd); white-space: nowrap; }
     .ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 50; align-items: flex-end; justify-content: center; }
     .ov.open { display: flex; }
     .sh { background: var(--bg); color: var(--txt); width: 100%; max-width: 540px; border-radius: 20px 20px 0 0; padding: 18px 16px 26px; max-height: 85vh; overflow-y: auto; }
@@ -48,23 +37,14 @@
 <body>
   <div class="bh" id="btnTopBonus"><b style="font-size:14px">Кофейня «Зерно»</b><span class="bb">🎁 100 баллов</span></div>
 
-  <!-- ВСПЛЫВАЮЩАЯ ВЕРХНЯЯ КОРЗИНА + КНОПКА ОПЛАТЫ -->
-  <div class="cart-top" id="cartTopBar">
-    <div class="cart-info" id="btnOpenCart">
-      <b id="cartTopTotal">🛒 0.00 BYN</b>
-      <span id="cartTopCount">Нажмите, чтобы посмотреть состав</span>
-    </div>
-    <button class="pay-top-btn" id="btnTopPay">Оплатить →</button>
-  </div>
-
   <div class="top">
     <button class="geo" id="btnGeo">📍 Гео</button>
     <div class="srch"><span>🔍</span><input type="text" id="searchInput" placeholder="Поиск напитков и еды..."></div>
   </div>
   <div id="mainContent"></div>
   <div class="dock" id="bottomDock">
-    <button class="db" id="btnWrite" style="background:var(--sec);color:var(--txt)">💬 Написать бариста</button>
-    <button class="db" id="btnBonus" style="background:var(--btn);color:var(--btxt);border:none">🎁 Мои бонусы</button>
+    <button class="db" id="btnWrite" style="background:var(--sec);color:var(--txt)">💬 Написать</button>
+    <button class="db" id="btnBonus" style="background:var(--btn);color:var(--btxt);border:none">🎁 Бонусы</button>
   </div>
   <div class="ov" id="modalOverlay">
     <div class="sh">
@@ -72,9 +52,9 @@
       <div id="mm"></div>
       <p id="mx" style="font-size:14px;color:var(--hint);line-height:1.45;margin-bottom:14px;white-space:pre-line"></p>
       <div id="ma"></div>
-      <button class="db" id="btnClose" style="background:var(--sec);color:var(--txt);border:none">Закрыть</button>
+      <button class="db" id="btnClose" style="width:100%;background:var(--sec);color:var(--txt);border:none">Закрыть</button>
     </div>
   </div>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
