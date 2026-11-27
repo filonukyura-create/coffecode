@@ -173,28 +173,15 @@ function sendOrder() {
 }
 
 function upCartUI() {
-  const topBar = document.getElementById("cartTopBar");
-  const topTotal = document.getElementById("cartTopTotal");
-  const topCount = document.getElementById("cartTopCount");
-  const dock = document.getElementById("bottomDock");
   const t = getTotals();
+  if (!window.Telegram || !window.Telegram.WebApp) return;
 
   if (t.qty > 0) {
-    topBar.classList.add("show");
-    topTotal.textContent = "🛒 Корзина: " + t.finalTotal.toFixed(2) + " BYN";
-    topCount.textContent = "Позиций: " + t.qty + " шт. (нажмите для оформления)";
-    if (window.Telegram && window.Telegram.WebApp) {
-      dock.style.paddingBottom = "64px";
-      window.Telegram.WebApp.MainButton.setText("ОФОРМИТЬ ЗАКАЗ • " + t.finalTotal.toFixed(2) + " BYN");
-      window.Telegram.WebApp.MainButton.show();
-    }
+    window.Telegram.WebApp.MainButton.setText("ОФОРМИТЬ ЗАКАЗ • " + t.finalTotal.toFixed(2) + " BYN");
+    window.Telegram.WebApp.MainButton.show();
   } else {
     useBonus = false;
-    topBar.classList.remove("show");
-    if (window.Telegram && window.Telegram.WebApp) {
-      dock.style.paddingBottom = "14px";
-      window.Telegram.WebApp.MainButton.hide();
-    }
+    window.Telegram.WebApp.MainButton.hide();
   }
 }
 
@@ -252,11 +239,11 @@ function openM(t) {
     const wrap = el("div", "mf");
     const ifr = el("iframe");
     ifr.width = "100%"; ifr.height = "100%"; ifr.frameBorder = "0";
-    ifr.src = "https://openstreetmap.org";
+    ifr.src = "https://" + "www.openstreetmap.org/export/embed.html?bbox=27.588%2C53.923%2C27.599%2C53.929&layer=mapnik&marker=53.9261%2C27.5936";
     wrap.appendChild(ifr); mm.appendChild(wrap);
     mx.textContent = CONFIG.address;
     const a = el("a", "rb", "🗺 Открыть в Яндекс.Картах");
-    a.href = "https://yandex.by";
+    a.href = "https://" + "yandex.by/maps/?pt=27.5936,53.9261&z=17&l=map";
     a.target = "_blank"; ma.appendChild(a);
   } else if (t === "bonus") {
     mt.textContent = "🎁 Программа лояльности";
@@ -273,8 +260,6 @@ document.getElementById("btnGeo").onclick = () => openM("geo");
 document.getElementById("btnBonus").onclick = () => openM("bonus");
 document.getElementById("btnTopBonus").onclick = () => openM("bonus");
 document.getElementById("btnWrite").onclick = () => openM("write");
-document.getElementById("btnOpenCart").onclick = () => openM("cart");
-document.getElementById("btnTopPay").onclick = () => openM("cart");
 document.getElementById("btnClose").onclick = closeM;
 document.getElementById("modalOverlay").onclick = (e) => { if (e.target.id === "modalOverlay") closeM(); };
 document.getElementById("searchInput").oninput = (e) => { searchQ = e.target.value; render(); };
